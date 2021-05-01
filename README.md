@@ -31,7 +31,7 @@ async function responsesQuery(pool, email, time, lim) {
   // return a cursorResult called with (null, null) when done
   if (!fin) return cursorResult(null, null)
 
-  // return a cursorResult with the results and the new "limit",
+  // return a cursorResult with an array of results and the new "limit",
   // the key for pagination, when there are some results
   return cursorResult(res.rows, fin['timestamp'])
 }
@@ -44,6 +44,7 @@ const pool = Pool()
 const fn = (lim, time) => responsesQuery(pool, email, survey, time, lim)
 const stream = new ClientCursorStream(fn, new Date('1970-01-01'))
 
-// stream is a Readable stream, each chunk will be a res.rows object
-// it will end when there are no more results
+// stream is a Readable stream, each chunk will be a single element of the
+// returned array (in this case, the res.rows array). it will end when
+// there are no more results
 ```
