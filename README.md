@@ -26,12 +26,19 @@ async function responsesQuery(pool, email, time, lim) {
   const res = await pool.query(query, [time, email, lim])
   const fin = res.rows.slice(-1)[0]
 
+  // return a cursorResult called with (null, null) when done
   if (!fin) return cursorResult(null, null)
 
+  // return a cursorResult with the results and the new "limit",
+  // the key for pagination, when there are some results
   return cursorResult(res.rows, fin['timestamp'])
 }
 
 const pool = Pool()
+
+// ClientCursorStream is initialized with:
+// 1. a function that takes (lim, time) and returns a cursorResult
+// 2. the first limit (the minimum value of the key on which you paginate)
 const fn = (lim, time) => responsesQuery(pool, email, survey, time, lim)
 const stream = new ClientCursorStream(fn, new Date('1970-01-01'))
 
