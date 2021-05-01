@@ -1,5 +1,7 @@
 # client-cursor-stream
 
+A simple node.js library for implementing a client-side database cursor, with any database driver, with results provided as a node Readable stream.
+
 ## Install
 
 ``` shell
